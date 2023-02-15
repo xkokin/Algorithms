@@ -26,34 +26,27 @@ void swap(int* a, int *b){
     *b = temp;
 }
 
-// funkcia rozdelenia mnoziny na podmnoziny a ich sortovanie
-int partition(int* h, int lo, int hi){
-    int pivot = h[hi];
-    int i = lo-1;
-
-    for(int j = lo; j < hi-1; ++j){
-        if (h[j] >= pivot){
-            ++i;
-            swap(&h[i], &h[j]);
-        }
-    }
-    swap(&h[i+1], &h[hi]);
-    return i+1;
-}
 
 // quick sort spraveny rekurzivne
-void quick_sort(int* h, int lo, int hi) {
-    if (lo < hi){
-        
-        int p = partition(h, lo, hi);
+void bubbleSort(int* h, int size) {
+    int i = 0;
+    short reset = 1;
+    while(1){
+        if (i + 1 == size) {
+            if (reset == 1) return;
+            i = 0;
+            reset = 1;
+        }
 
-        quick_sort(h, lo, p-1);
-        quick_sort(h, p+1, hi);
-
+        if (h[i+1] >= h[i]) {
+            swap(&h[i+1], &h[i]);
+            reset = 0;
+        }
+        ++i;
     }
 }
 
-void print_res(int* h, int size){
+void printRes(int* h, int size){
     for (int i = 0; i < size; ++i){
         printf("%d ", h[i]);
     }
@@ -76,12 +69,10 @@ int main(int argc, char* argv[]){
         h[i] = atoi(argv[i+4]);
     }
 
-    int lo = 0;
-    int hi = m-1;
-    // spravime quick sort
-    quick_sort(h, lo, hi);
+    // spravime bubble sort
+    bubbleSort(h, m);
     // vypiseme vysledok
-    print_res(h, m);
+    printRes(h, m);
 
     // spocitajme sucet najtazsych k vozidiel
     int sum = 0;
