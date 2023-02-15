@@ -33,8 +33,8 @@ int partition(int* h, int lo, int hi){
 
     for(int j = lo; j < hi-1; ++j){
         if (h[j] >= pivot){
-            ++i;
             swap(&h[i], &h[j]);
+            ++i;
         }
     }
     swap(&h[i+1], &h[hi]);
