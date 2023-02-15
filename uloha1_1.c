@@ -19,30 +19,45 @@ Nie*/
 #include <stdio.h>
 #include <stdlib.h>
 
-char* uloha1_1(int n, int k, int m, const int* h) {
-    printf("n: %d, k: %d, m: %d\n", n, k, m);
-    int sum = 0;
-    for(int i = 0; i < m; ++i){
-        sum = h[i];
-        for (int cur = i+1; cur < m; ++cur){
-            for (int j = cur; j < k-1; ++j) {
-                if (i + j > m - 1) {
-                    printf("starting num: %d, sum: %d, n: %d\n", i, sum, n);
-                    if (sum > n) return "Nie";
-                    sum = h[i];
-                    break;
-                }
-                sum += h[i + j];
-            }
-            printf("starting num: %d, sum: %d\n", i, sum);
-            if (sum > n) return "Nie";
-            sum = h[i];
-        }
+// jednoducha funkcia na swapovanie dvoch prvkov
+void swap(int* a, int *b){
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
 
+// funkcia rozdelenia mnoziny na podmnoziny a ich sortovanie
+int partition(int* h, int lo, int hi){
+    int pivot = h[hi];
+    int i = lo-1;
+
+    for(int j = lo; j < hi-1; ++j){
+        if (h[j] >= pivot){
+            ++i;
+            swap(&h[i], &h[j]);
+        }
+    }
+    swap(&h[i+1], &h[hi]);
+    return i+1;
+}
+
+// quick sort spraveny rekurzivne
+void quick_sort(int* h, int lo, int hi) {
+    if (lo < hi){
+        
+        int p = partition(h, lo, hi);
+
+        quick_sort(h, lo, p-1);
+        quick_sort(h, p+1, hi);
 
     }
+}
 
-    return "Ano";
+void print_res(int* h, int size){
+    for (int i = 0; i < size; ++i){
+        printf("%d ", h[i]);
+    }
+    printf("\n");
 }
 
 int main(int argc, char* argv[]){
@@ -50,13 +65,34 @@ int main(int argc, char* argv[]){
         printf("Lack of arguments!\n");
         return 1;
     }
-    int* h = (int*)malloc(atoi(argv[3])*sizeof(int));
-
-    for(int i = 0; i < atoi(argv[3]); ++i){
+    // zapiseme argumenty do premennych
+    int n = atoi(argv[1]);
+    int k = atoi(argv[2]);
+    int m = atoi(argv[3]);
+    // inicializujeme dynamicky array
+    int* h = (int*)malloc(m*sizeof(int));
+    // inicializujeme dynamicky array
+    for(int i = 0; i < m; ++i){
         h[i] = atoi(argv[i+4]);
     }
 
-    printf("%s", uloha1_1(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), h));
+    int lo = 0;
+    int hi = m-1;
+    // spravime quick sort
+    quick_sort(h, lo, hi);
+    // vypiseme vysledok
+    print_res(h, m);
+
+    // spocitajme sucet najtazsych k vozidiel
+    int sum = 0;
+    for(int l = 0; l < k; ++l){
+        sum += h[l];
+    }
+    // vypiseme vysledok
+    if(sum > n) printf("Nie");
+    else  printf("Ano");
+    // uvolnime pamat
     free(h);
+
     return 0;
 }

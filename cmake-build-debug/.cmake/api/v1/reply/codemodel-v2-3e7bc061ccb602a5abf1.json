@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "E:/Study/4_SS/TEAP/Zadania/cmake-build-debug",
-		"source" : "E:/Study/4_SS/TEAP/Zadania"
+		"build" : "D:/Study/4.StvrtySem/TEAP/Zadania/cmake-build-debug",
+		"source" : "D:/Study/4.StvrtySem/TEAP/Zadania"
 	},
 	"version" : 
 	{
