@@ -27,8 +27,11 @@ Výstup pre ukážkový vstup:
 #include <stdlib.h>
 #include <string.h>
 
-int contains(int target, int* array){
-    for(int i = 0; i < sizeof(array)/sizeof(&array[0]); i++){
+int contains(int target, int* array, int size){
+    if (target == 0) return 1;
+
+    for(int i = 0; i < size; i++){
+
         if (array[i] == target) return 0;
     }
     return 1;
@@ -36,32 +39,35 @@ int contains(int target, int* array){
 
 int countKamions(int* h, int size){
     int res = 0;
-    int banned[size];
-    memset(banned, -1, size);
+    int* banned = (int*) calloc (size, sizeof(int));
     int bannedCnt = 0;
     int match = 0;
     int nextBan = -1;
 
     for(int i = 0; i < size; i++){
-        if(contains(i, banned) == 0) {
-            printf("h[i]: %d is already used\n", h[i]);
+        if(contains(i, banned, size) == 0) {
+            //printf("h[i]: %d is already used\n", h[i]);
             continue;
         }
 
         if (i + 1 == size) return res + 1;
 
-        if (h[i] >= 200) res++;
+        if (h[i] >= 200) {
+            res++;
+            //printf("too many boxes to pair +1\n");
+        }
         else {
             for(int j = i+1; j < size; j++){
                 if (h[j] >= 200) continue;
 
-                if (contains(h[j], banned))continue;
+                if (contains(h[j], banned, size) == 0)continue;
 
                 if (h[j] > match && h[j] <= 300 - h[i]) {
                     match = h[j];
                     nextBan = j;
                 }
             }
+            //printf("%d: found next match: %d on position %d\n", i+1, match, nextBan+1);
             match = 0;
             banned[bannedCnt] = nextBan;
             bannedCnt++;
@@ -92,5 +98,6 @@ int main(){
         }
 
         printf("%d\n", countKamions(h, n));
+        free(h);
     }
 }
