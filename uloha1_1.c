@@ -34,14 +34,6 @@ void swap(int* a, int *b){
     *b = temp;
 }
 
-
-<<<<<<< HEAD
-    for(int j = lo; j < hi-1; ++j){
-        if (h[j] >= pivot){
-            swap(&h[i], &h[j]);
-            ++i;
-
-
 // primitivny bubble sort casova zlozitost O(n^2)
 void bubbleSort(int* h, int size) {
     int i = 0;
