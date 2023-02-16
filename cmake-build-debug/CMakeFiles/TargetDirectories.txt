@@ -1,3 +1,0 @@
-D:/Study/4.StvrtySem/TEAP/Zadania/cmake-build-debug/CMakeFiles/Zadania.dir
-D:/Study/4.StvrtySem/TEAP/Zadania/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/Study/4.StvrtySem/TEAP/Zadania/cmake-build-debug/CMakeFiles/rebuild_cache.dir
