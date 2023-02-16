@@ -27,47 +27,45 @@ Výstup pre ukážkový vstup:
 #include <stdlib.h>
 #include <string.h>
 
-// jednoducha funkcia na swapovanie dvoch prvkov
-void swap(int* a, int *b){
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-// primitivny bubble sort casova zlozitost O(n^2)
-void bubbleSort(int* h, int size) {
-    int i = 0;
-    short reset = 1;
-    while(1){
-        //dojdeme do konca, overime marker reset, ak nie je 1 tak znamena to ze v
-        // tomto prechode cez array sme spravily swap
-        // inac mozeme skoncit cyclus
-        if (i + 1 == size) {
-            if (reset == 1) return;
-            i = 0;
-            reset = 1;
-        }
-        //swapujeme ak dalsi element je vacsi za aktualny,
-        // tym padom budeme mat descending sorted array
-        // a ostava sa nam scitat sucet prvych k prvkov
-        if (h[i+1] > h[i]) {
-            swap(&h[i+1], &h[i]);
-            reset = 0;
-        }
-        // iterujeme cez array
-        ++i;
+int contains(int target, int* array){
+    for(int i = 0; i < sizeof(array)/sizeof(&array[0]); i++){
+        if (array[i] == target) return 0;
     }
+    return 1;
 }
 
 int countKamions(int* h, int size){
     int res = 0;
+    int banned[size];
+    memset(banned, -1, size);
+    int bannedCnt = 0;
+    int match = 0;
+    int nextBan = -1;
+
     for(int i = 0; i < size; i++){
+        if(contains(i, banned) == 0) {
+            printf("h[i]: %d is already used\n", h[i]);
+            continue;
+        }
+
         if (i + 1 == size) return res + 1;
 
-        if (h[i] > 150) res++;
+        if (h[i] >= 200) res++;
         else {
+            for(int j = i+1; j < size; j++){
+                if (h[j] >= 200) continue;
+
+                if (contains(h[j], banned))continue;
+
+                if (h[j] > match && h[j] <= 300 - h[i]) {
+                    match = h[j];
+                    nextBan = j;
+                }
+            }
+            match = 0;
+            banned[bannedCnt] = nextBan;
+            bannedCnt++;
             res++;
-            i++;
         }
 
     }
@@ -88,12 +86,10 @@ int main(){
         int* h = (int*) calloc (n, sizeof(int));
 
         token = strtok(input, " ");
-        for(int i = 0; i < n; i++){
+        for(int i = 0; i < n; i++) {
             h[i] = atoi(token);
             token = strtok(NULL, " ");
         }
-
-        bubbleSort(h, n);
 
         printf("%d\n", countKamions(h, n));
     }
