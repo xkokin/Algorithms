@@ -55,7 +55,7 @@ int countWins(int N, int* T, int A, int B){
 
 
     for(int i = A-1; i < B; i++) {
-       if (table[i] == 'V') res++;
+        if (table[i] == 'V') res++;
     }
 
     free(table);
