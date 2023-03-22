@@ -1,50 +1,61 @@
+
 #include <stdio.h>
-#include <stdlib.h>
+#include <limits.h>
 
-#define INF 1e9
+#define MAX_N 20
 
-int N, **cost, **dp, **prev;
+int n;
+int dist[MAX_N][MAX_N];
+int visited[MAX_N];
+int min_dist = INT_MAX;
+int min_path[MAX_N];
 
-int min(int a, int b) {
-    return a < b ? a : b;
-}
+void dfs(int current, int visited_count, int dist_so_far, int path[MAX_N]) {
+    visited[current] = 1;
+    path[visited_count-1] = current+1;
 
-int tsp(int i, int S) {
-    if (dp[i][S] != -1) {
-        return dp[i][S];
-    }
-    if (S == (1 << N) - 1) {
-        dp[i][S] = cost[i][0];
-        return dp[i][S];
-    }
-    int min_effort = INF;
-    for (int j = 0; j < N; j++) {
-        if ((S & (1 << j)) == 0) {
-            int curr_effort = cost[i][j] + tsp(j, S | (1 << j));
-            if (curr_effort < min_effort) {
-                min_effort = curr_effort;
-                prev[i][S] = j;
+    if (visited_count == n) {
+        // We have visited all houses, update the minimum distance and path
+        if (dist_so_far < min_dist) {
+            min_dist = dist_so_far;
+            for (int i = 0; i < n; i++) {
+                min_path[i] = path[i];
+            }
+        }
+    } else {
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                int new_dist_so_far = dist_so_far + dist[current][i];
+                if (new_dist_so_far < min_dist) {
+                    dfs(i, visited_count+1, new_dist_so_far, path);
+                }
             }
         }
     }
-    dp[i][S] = min_effort;
-    return min_effort;
-}
 
-void get_sequence(int i, int S, int *sequence) {
-    if (S == (1 << N) - 1) {
-        sequence[N-1] = i;
-        return;
-    }
-    sequence[N - __builtin_popcount(S) - 1] = i;
-    int j = prev[i][S];
-    get_sequence(j, S | (1 << j), sequence);
+    visited[current] = 0;
 }
 
 int main() {
-    scanf("%d", &N);
-    cost = malloc(N * sizeof(int *));
-    dp = malloc(N * sizeof(int *));
-    prev = malloc(N * sizeof(int *));
-    for (int i = 0; i < N; i++) {
-        cost[i] = malloc(N * sizeof(int));
+    scanf("%d", &n);
+
+    // Read the distance matrix
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &dist[i][j]);
+        }
+    }
+
+    // Start from house 1 and visit all other houses
+    int path[MAX_N];
+    dfs(0, 1, 0, path);
+
+    // Print the minimum distance and path
+    printf("%d\n", min_dist);
+    for (int i = 0; i < n; i++) {
+        printf("%d ", min_path[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
